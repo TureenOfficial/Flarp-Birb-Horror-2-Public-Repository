@@ -35,14 +35,14 @@ public class BonusMapsHandling : MonoBehaviour
 
         if(PlayerPrefs.GetString("bonusMap2_unlocked", "false") == "true")
         {
-            BonusLevelsButton[1].interactable = false;
-            BonusLevel_Text[1].text = "COMING SOON";
+            BonusLevelsButton[1].interactable = true;
+            BonusLevel_Text[1].text = "PLAY";
             LevelImage[1].texture = UnlockedTextures[1];
         }
         else
         {
             BonusLevelsButton[1].interactable = false;
-            BonusLevel_Text[1].text = "COMING SOON";
+            BonusLevel_Text[1].text = "LOCKED";
 
             if(HideDetails[1])
             {

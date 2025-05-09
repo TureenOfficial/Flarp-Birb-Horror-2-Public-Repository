@@ -57,14 +57,23 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-        if(SceneManager.GetActiveScene().name == "fbhr_Chapter3")
-        {
-            PlayerDetails.PlayerSpeedMultiplier = 1.25f;
-        }
-
-
         canMove = true;
+
+        if(PlayerDetails.PlayerGravityMultiplier == 0) PlayerDetails.PlayerGravityMultiplier = 1;
+        gravity = 20 * PlayerDetails.PlayerGravityMultiplier;
+
+        if(PlayerDetails.PlayerStaminaMultiplier == 0) PlayerDetails.PlayerStaminaMultiplier = 1;
+        staminaMax = 100 * PlayerDetails.PlayerStaminaMultiplier;
+
+        if(PlayerDetails.PlayerSpeedMultiplier == 0) PlayerDetails.PlayerSpeedMultiplier = 1;
+        walkingSpeed *= PlayerDetails.PlayerSpeedMultiplier;
+        runningSpeed *= PlayerDetails.PlayerSpeedMultiplier;
+
+
+        staminaBarVisualiser.maxValue = staminaMax;
+
         playerStamina = staminaMax;
+        
         
         characterController = GetComponent<CharacterController>();
         // Lock cursor
@@ -100,7 +109,7 @@ public class PlayerController : MonoBehaviour
         staminaBarVisualiser.value = playerStamina;
 
         staminaIconImage.color = new Color(255,255,255,1 * (playerStamina/100));
-        if(flarpBehaviour != null && _EyeAnim != null) 
+        if(flarpBehaviour != null && _EyeAnim != null && flarpBehaviour.affectsPlayerSpeed) 
         {
             _EyeAnim.speed = 1 + (30 / flarpBehaviour.distanceToPlayer);
         }

@@ -96,6 +96,7 @@ public class MoneyCalculation : MonoBehaviour
         if (currentMoney >= price)
         {
             PlayerPrefs.SetFloat("moneyAmount", currentMoney - price);
+            PlayerPrefs.SetFloat("moneySpent", PlayerPrefs.GetFloat("moneySpent", 0) + price);
             PlayerPrefs.SetString($"{chapterPurchased}paid", "true");
 
             ShowPlayButton();

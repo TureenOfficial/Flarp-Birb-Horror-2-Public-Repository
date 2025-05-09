@@ -47,6 +47,7 @@ public class MoneyManager : MonoBehaviour
 
             if(Reward < 0)
             {
+                MoneyDisplay.text = $"REWARD: 0$";
                 Reward = 0;
             }
         }

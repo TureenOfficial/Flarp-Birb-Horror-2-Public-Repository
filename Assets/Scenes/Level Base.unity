@@ -12704,6 +12704,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2073067536}
+  - component: {fileID: 2073067537}
   m_Layer: 9
   m_Name: Dan-Blend
   m_TagString: Untagged
@@ -12728,6 +12729,25 @@ Transform:
   m_Father: {fileID: 302147169}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &2073067537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073067535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91119badc76a71e44bdce365cf3aeb5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 897150566}
+  materialArray:
+  - {fileID: 2100000, guid: 1104893defb5f284090aec130bf81d86, type: 2}
+  - {fileID: 2100000, guid: d85a698deff73974aab792a13a97d197, type: 2}
+  - {fileID: 2100000, guid: c4ab115385182164e8d3ad10474e572c, type: 2}
+  PlayerMat: {fileID: 0}
+  meshRenderer: {fileID: 0}
 --- !u!1 &2089671475
 GameObject:
   m_ObjectHideFlags: 0

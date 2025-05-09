@@ -1,6 +1,5 @@
-using GameJolt.API;
+using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 
 public class OptionsManager : MonoBehaviour
@@ -20,9 +19,15 @@ public class OptionsManager : MonoBehaviour
     [SerializeField] UnityEngine.UI.Toggle fpsToggle;
     [SerializeField] UnityEngine.UI.Toggle mbToggle;
     [SerializeField] UnityEngine.UI.Toggle ogToggle;
+    [SerializeField] UnityEngine.UI.Toggle fullscreenToggle;
     [SerializeField] string fpsCounterOn;
     [SerializeField] string motionblurOn;
     [SerializeField] string ogGraphicsOn;
+    [SerializeField] string isFullscreenOn;
+    [SerializeField] bool isFullscreen;
+    [SerializeField] bool On;
+    [SerializeField] TMP_Dropdown resolutionDropdown;
+    private List<Resolution> availableResolutions = new List<Resolution>();
     [SerializeField] TMP_InputField cursorColorField;
     [SerializeField] TMP_InputField fpsCapInputField;
 
@@ -40,20 +45,71 @@ public class OptionsManager : MonoBehaviour
             audioSource.volume = volume;
         }
     }
+    public void OnResolutionChange(int index)
+    {
+        SetResolution(availableResolutions[index]);
+        PlayerPrefs.SetInt("resIndex", index);
+    }
+
+    public void SetResolution(Resolution resolution)
+    {
+        Screen.SetResolution(resolution.width, resolution.height, isFullscreen);
+    }
+    private bool ignoreFullscreenCallback = false;
+
+    public void SetFullscreen(bool On)
+    {
+        if (ignoreFullscreenCallback) return;
+
+        ignoreFullscreenCallback = true;
+        isFullscreen = On;
+        Screen.fullScreen = On;
+        PlayerPrefs.SetString("gameFullscreen", On.ToString());
+        fullscreenToggle.isOn = On;
+        ignoreFullscreenCallback = false;
+    }
 
     void Start()
     {
+        List<string> options = new List<string>();
+        Resolution[] resolutions = Screen.resolutions;
+
+        foreach (Resolution res in resolutions)
+        {
+            string option = res.width + " x " + res.height;
+            options.Add(option);
+            availableResolutions.Add(res);
+        }
+
+        resolutionDropdown.ClearOptions();
+        resolutionDropdown.AddOptions(options);
+
+        int savedResIndex = PlayerPrefs.GetInt("resIndex", availableResolutions.Count - 1);
+        resolutionDropdown.value = savedResIndex;
+        SetResolution(availableResolutions[savedResIndex]);
+        resolutionDropdown.onValueChanged.AddListener(OnResolutionChange);
         audioVolumeSlider.onValueChanged.AddListener(SetAudioVolume);
         cursorColorField.onEndEdit.AddListener(ValidateColorInput);
         fpsCapInputField.onEndEdit.AddListener(OnFpsCapInputChanged);
+
+        isFullscreen = PlayerPrefs.GetString("gameFullscreen", "false") == "true";
+        Screen.fullScreen = isFullscreen;
+
+        fullscreenToggle.onValueChanged.RemoveAllListeners();
+        fullscreenToggle.isOn = isFullscreen;
+        fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
+
+        print(isFullscreen);
+        
         Load();
     }
+
 
     private void OnFpsCapInputChanged(string input)
     {
         if (float.TryParse(input, out float fpsValue))
         {
-            fpsValue = Mathf.Clamp(fpsValue, 10f, 400f);
+            fpsValue = Mathf.Clamp(fpsValue, 10f, 500f);
             fpsCapInputField.text = fpsValue.ToString();
             SetFPSCap(fpsValue);
         }
@@ -113,17 +169,30 @@ public class OptionsManager : MonoBehaviour
         if(ogToggle.isOn) ogGraphicsOn = "true";
         else ogGraphicsOn = "false";
 
-        int fpsCap = int.Parse(fpsCapInputField.text);
-        PlayerPrefs.SetInt("fpsCap", fpsCap);
+        if(fullscreenToggle.isOn) isFullscreenOn = "true";
+        else isFullscreenOn = "false";
+
+        if (int.TryParse(fpsCapInputField.text, out int fpsCap))
+            {
+                PlayerPrefs.SetInt("fpsCap", fpsCap);
+            }
+            else
+            {
+                fpsCap = 60;
+                fpsCapInputField.text = "60";
+                PlayerPrefs.SetInt("fpsCap", fpsCap);
+            }
 
         PlayerPrefs.SetString("cursorColor", cursorColorField.text);
         PlayerPrefs.SetString("fpsCounter", fpsCounterOn);
         PlayerPrefs.SetString("motionBlur", motionblurOn);
         PlayerPrefs.SetString("ogGraphics", ogGraphicsOn);
+        PlayerPrefs.SetString("gameFullscreen", isFullscreenOn);
         PlayerPrefs.SetFloat("audioMultiplier", audioVolumeSlider.value);
         PlayerPrefs.SetFloat("camSensitivity", camsensSlider.value);
         PlayerPrefs.SetFloat("curSizePercentage", curSizeSlider.value);
     }
+    
     public void DeleteData()
     {
         if(animationClip_Delete.isPlaying)
@@ -168,10 +237,30 @@ public class OptionsManager : MonoBehaviour
         PlayerPrefs.SetString("motionBlur", "true");
         PlayerPrefs.SetString("cursorColor", "ffffff");
         PlayerPrefs.SetFloat("moneyAmount", 0);
+        PlayerPrefs.SetFloat("moneySpent", 0);
         PlayerPrefs.SetString("fpsCounter", "false");
         PlayerPrefs.SetFloat("curSizePercentage", 75);
         PlayerPrefs.SetFloat("camSensitivity", 2);
         PlayerPrefs.SetFloat("audioMultiplier", 1);
+
+        PlayerPrefs.SetInt("timesPlayed", 0);
+        PlayerPrefs.SetInt("timesBeaten", 0);
+        PlayerPrefs.SetInt("timesDied", 0);
+        PlayerPrefs.SetInt("pingTimes", 0);
+        PlayerPrefs.SetInt("currentCosmetic", 0);
+        PlayerPrefs.DeleteKey("EncryptedUnlockData");
+
+        UnlockData newUnlockData = new UnlockData
+        {
+            IDsUnlocked = new int[] { 0 }, // Example unlocked IDs
+            IDsPurchased = new int[] { 0 } // Example purchased ID
+        };
+
+        string json = JsonUtility.ToJson(newUnlockData);
+        string encrypted = CryptoUtility.Encrypt(json);
+        PlayerPrefs.SetString("EncryptedUnlockData", encrypted);
+
+        PlayerPrefs.Save();
 
         Load();
     }

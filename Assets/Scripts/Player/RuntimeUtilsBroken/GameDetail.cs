@@ -5,8 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using GameJolt.API;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine.SceneManagement;
 
 public class GameDetail : MonoBehaviour
 {
@@ -108,6 +106,7 @@ public class GameDetail : MonoBehaviour
 
     void Start()
     {
+        PlayerPrefs.SetInt("timesPlayed", PlayerPrefs.GetInt("timesPlayed", 0) + 1);
         Bonuses.Clear();
         Time.timeScale = 1;
         UIParents[UIParents.Length -1].SetActive(false);
@@ -149,6 +148,8 @@ public class GameDetail : MonoBehaviour
         var pauseMenu = gameObject.GetComponent<PauseMenu>();
         pauseMenu.PauseAudio();
 
+        PlayerPrefs.SetInt("timesDied", PlayerPrefs.GetInt("timesDied", 0) + 1);
+
         LossAudioSource.enabled = true;
         LossAudioSource.volume = 0.2f * PlayerPrefs.GetFloat("audioMultiplier");
         gameActive = false;
@@ -159,12 +160,19 @@ public class GameDetail : MonoBehaviour
         switch (chapter)
         {
                 case 1:
+                    UnlockManager.AddNewUnlockedID(1);
                     PlayerPrefs.SetString("bonusMap1_unlocked", "true");
                     PlayerPrefs.SetString("FBHR_chapter2Active", "true"); // Unlock Chapter 2
                     if (GameJoltAPI.Instance?.gameObject != null) TryUnlockTrophy(262865, "Chapter 1 Completed");
                     break;
 
                 case 2:
+                UnlockManager.AddNewUnlockedID(2);
+
+                if(TimeInGame < 80)
+                {   
+                    UnlockManager.AddNewUnlockedID(3);
+                }
                     PlayerPrefs.SetString("FBHR_chapter3Active", "true"); // Unlock Chapter 3
                     UnityEngine.Debug.Log("Beat chapter 2, unlocking Chapter 3");
                     if (GameJoltAPI.Instance?.gameObject != null) TryUnlockTrophy(262867, "Chapter 2 Completed");
@@ -191,6 +199,7 @@ public class GameDetail : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.None;
         UnityEngine.Cursor.visible = true;
 
+        PlayerPrefs.SetInt("timesBeaten", PlayerPrefs.GetInt("timesBeaten", 0) + 1);
         Time.timeScale = 0f;
         var timeManagerRework = gameObject.GetComponent<TimeManagerRework>();
 

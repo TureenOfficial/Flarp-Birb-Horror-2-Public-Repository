@@ -27,6 +27,7 @@ public class InfoPing : MonoBehaviour
 
     public void Ping(string PingedText, float OnScreenTime, bool DeactivateOnPing)
     {
+        PlayerPrefs.SetInt("pingTimes", PlayerPrefs.GetInt("pingTimes", 0) + 1);
         gameObject.SetActive(false);
         TimesActivated ++;
         

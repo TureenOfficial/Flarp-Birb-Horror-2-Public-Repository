@@ -43,6 +43,8 @@ public class New_FlarpBehaviour : MonoBehaviour
     public AudioClip[] noticeClips;
     public AudioClip chasingloop;
     private bool hasDetectedOnce = false;
+
+    public bool affectsPlayerSpeed;
     //END
 
     //---------------

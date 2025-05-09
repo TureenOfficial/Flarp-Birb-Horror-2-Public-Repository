@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Misc/Intro.unity
+    guid: f70ece075306b94408b979ee7f1d1966
+  - enabled: 1
     path: Assets/Scenes/Misc/MainMenu.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
@@ -32,4 +35,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FBHR/fbhr_Chapter1/R/fbhr_Chapter1_R.unity
     guid: 66712e4e05bf7e24fa6fb9886e7c44d6
+  - enabled: 1
+    path: Assets/Scenes/Misc/Cosmetic.unity
+    guid: 4db0ddb35080a6349ada5a08335d8705
+  - enabled: 1
+    path: Assets/Scenes/Bonus/B_2/B_2.unity
+    guid: b0758f2746b20a447a4753fa1f6a90ca
   m_configObjects: {}

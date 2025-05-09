@@ -10,6 +10,7 @@ public class TeleportPlayer : MonoBehaviour
     [SerializeField] AudioSource audioSource;
     [SerializeField] bool doesSound;
     [SerializeField] bool isOnTrigger;
+    [SerializeField] bool OOBTrigger = true;
 
     public void OnTriggerEnter(Collider collider)
     {
@@ -20,7 +21,10 @@ public class TeleportPlayer : MonoBehaviour
     }
     public void TP()
     {
-        InfoPing.Instance.Ping("Out of bounds!", 5, false);
+        if(OOBTrigger)
+        {
+            InfoPing.Instance.Ping("Out of bounds!", 5, false);
+        }
         if(doesSound)
         {
             audioSource.Play();

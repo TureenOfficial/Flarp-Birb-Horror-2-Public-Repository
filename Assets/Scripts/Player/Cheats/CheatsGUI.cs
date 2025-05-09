@@ -3,6 +3,7 @@ using System.Numerics;
 using UnityEngine;
 using UnityEngine.UIElements;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CheatsGUI : MonoBehaviour
 {
@@ -113,6 +114,11 @@ public class CheatsGUI : MonoBehaviour
             GameDetail.Instance.ScoreNeeded = amount;
         });
 
+        var TAKEMETOYOURLEADER = new CheatCommand<string>("take_me_to_your_leader", "Takes you to a different scene", "take_me_to_your_leader <string>", (where) =>
+        {
+            SceneManager.LoadScene(where);
+        });
+
 
         commandList = new List<object>
         {
@@ -121,7 +127,8 @@ public class CheatsGUI : MonoBehaviour
             MAP_ACTIVE,
             DURANDURAN,
             COLLECTMYPAGES,
-            WHATHOWMANY
+            WHATHOWMANY,
+            TAKEMETOYOURLEADER
         };
     }
 
